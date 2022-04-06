@@ -11,6 +11,12 @@ from time import strftime
 from mkcloud import gatherScreenshots, resizeImages
 #import ssl
 
+def getExitCodeFromSuccessCriteria(successCriteria, results):
+  #Applies a success criteria on results in order to get accurate exitCode
+  numOfSuccess = sum(result['success'] for result in results)
+  successRate = numOfSuccess / len(results)
+  return 0 if successRate >= (successCriteria / 100) else 1
+
 def gatherFeedbackData(browserName):
   #The path will be relative to the browser used to execute the test (chromeTest/firefoxTest)
   path = 'build/test-results/'+browserName
@@ -63,6 +69,7 @@ def run(args):
   route = 'src/test/groovy'
   browser = args.browser
   dimensions = args.dimensions
+  successCriteria = args.criteria
   if dimensions is not None:
     checkDimensions = isinstance(dimensions[0], int) & isinstance(dimensions[1],int)
   else:
@@ -88,6 +95,18 @@ def run(args):
 
   userId = ''
   if field == "hashtag":
+    if successCriteria is None:
+      #if not a specific criteria was set, look for this hashtag on criteria file
+      path = dirname + '/criteria.json'
+      try:
+        with open(path, 'r') as criteria_file:
+          criteria = json.load(criteria_file)
+          successCriteria = criteria.get(value)
+          if successCriteria is not None:
+            print("A success rate criteria of:", successCriteria, "% is being applied to this execution.")
+      except IOError:
+        #couldn't read the file, likely it does not exist. Nothing wrong
+        pass
     value = "#"+value
 
   valueArr = []
@@ -240,6 +259,10 @@ def run(args):
   else:
     print(field+': is not an allowed property')
 
+  #If exitCode is 0 everything is OK, no need to check criteria.
+  if exitCode != 0 and successCriteria is not None and len(testsExecuted) > 0:
+    exitCode = getExitCodeFromSuccessCriteria(successCriteria, testsExecuted)
+
   print("exiting script with exitcode: " + str(exitCode))
   exit(exitCode)
 
@@ -264,6 +287,7 @@ def main():
   parser.add_argument("-noexec",help="(Optional). If set then only download the scripts", dest="noexec", action="store_true")
   parser.add_argument("-browser",help="(Optional). Select one of the available browsers to run the test (default firefox)", type=str, dest="browser")
   parser.add_argument("-dimensions",help="(Optional). Dimensions to execute the tests, a pair of values for width height, ex. -dimensions 1800 300", type=int, nargs=2, dest="dimensions")
+  parser.add_argument("-criteria",help="(Optional). Minimal rate of passed tests to return success code. Value from 0 to 100.", type=int, dest="criteria")
   parser.set_defaults(func=run)
   args=parser.parse_args()
   args.func(args)
