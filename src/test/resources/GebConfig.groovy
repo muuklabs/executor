@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.remote.CapabilityType
+import org.openqa.selenium.remote.RemoteWebDriver
 
 waiting {
   timeout = 20
@@ -45,6 +46,24 @@ environments {
     atCheckWaiting = 1
     driver = { new FirefoxDriver() }
   }
+
+  // run via “./gradlew browserstackTest
+  browserstack{
+    String USERNAME = "user";
+    String AUTOMATE_KEY = "automatekey";
+    String URL = "https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub";
+    driver = {
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability("os", "Windows");
+      caps.setCapability("os_version", "10");
+      caps.setCapability("browser", "Chrome");
+      caps.setCapability("browser_version", "107.0");
+      caps.setCapability("browserstack.local", "false");
+      caps.setCapability("browserstack.debug", "true");
+      caps.setCapability("browserstack.selenium_version", "3.6.0");
+      new RemoteWebDriver(new URL(URL), caps);
+    }
+	}	
 }
 
 // To run the tests with all browsers just run “./gradlew test”

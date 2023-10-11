@@ -76,6 +76,7 @@ def run(args):
   value = args.value
   noexec = args.noexec
   route = 'src/test/groovy'
+  # hardcoding to browserstack
   browser = args.browser
   # internal cloud only
   executionNumber = args.executionnumber or None
@@ -301,7 +302,8 @@ def run(args):
 def getBrowserName(browser):
   switcher = {
     "chrome":"chromeTest",
-    "firefox": "firefoxTest"
+    "firefox": "browserstackTest",
+    "browserstack": "browserstackTest"
   }
   #select a browser from the list or return firefox as default
   return switcher.get(browser,"firefoxTest")
