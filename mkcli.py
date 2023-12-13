@@ -99,7 +99,7 @@ def run(args):
   token=''
   try:
     key_file = open(path,'r')
-    key = key_file.read()
+    key = key_file.read().strip()
     r = requests.post(muuktestRoute+"generate_token_executer", data={'key': key})
     #r = requests.post(muuktestRoute+"generate_token_executer", data={'key': key}, verify=False)
     responseObject = json.loads(r.content)
