@@ -49,26 +49,26 @@ hooks:
 # During the BeforeInstall deployment lifecycle event, run the commands 
 #   in the script specified in "location".
   BeforeInstall:
-    #- location: scripts/backup
+    #- location: deploy_scripts/backup
     #  timeout: 300
     #  runas: root
-    - location: scripts/install_dependencies
+    - location: deploy_scripts/install_dependencies
       timeout: 300
       runas: root
 # During the AfterInstall deployment lifecycle event, run the commands 
 #   in the script specified in "location".
   AfterInstall:
-    - location: scripts/config_files
+    - location: deploy_scripts/config_files
       timeout: 300
       runas: root
-    - location: scripts/start_services
+    - location: deploy_scripts/start_services
       timeout: 300
       runas: root
 # During the ApplicationStop deployment lifecycle event, run the commands 
 #   in the script specified in "location" starting from the root of the 
 #   revision's file bundle.
   ApplicationStop:
-    - location: scripts/stop_services
+    - location: deploy_scripts/stop_services
       timeout: 300
       runas: root
 
