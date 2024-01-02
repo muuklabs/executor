@@ -13,8 +13,8 @@ ext {
         groovyVersion = '2.4.12'
         gebVersion = '2.2'
         seleniumVersion = '3.6.0'
-        // chromeDriverVersion = '114.0.5735.16'
-        geckoDriverVersion = '0.23.0'
+        chromeDriverVersion = '114.0.5735.198'
+        geckoDriverVersion = '0.28.0'
     }
 }
 

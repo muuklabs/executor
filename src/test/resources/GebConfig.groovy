@@ -17,12 +17,10 @@ environments {
   // See: http://code.google.com/p/selenium/wiki/ChromeDriver
   chrome {
     driver = {
-      System.setProperty("webdriver.chrome.driver", "/home/ubuntu/projects/chrome-linux64/chromedriver")
       ChromeOptions o = new ChromeOptions()
       o.addArguments('--no-sandbox');
       o.addArguments('--disable-dev-shm-usage');
       o.addArguments("--ignore-certificate-errors");
-      o.setBinary("/home/ubuntu/projects/chrome-linux64/chrome")
       DesiredCapabilities cap=DesiredCapabilities.chrome();
       cap.setCapability(ChromeOptions.CAPABILITY, o);
       cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
