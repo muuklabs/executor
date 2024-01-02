@@ -58,9 +58,9 @@ hooks:
 # During the AfterInstall deployment lifecycle event, run the commands 
 #   in the script specified in "location".
   # AfterInstall:
-    # - location: deploy_scripts/config_files
-    #   timeout: 300
-    #   runas: root
+    - location: deploy_scripts/config_files
+      timeout: 300
+      runas: root
     # - location: deploy_scripts/start_services
     #   timeout: 300
     #   runas: root
