@@ -14,10 +14,10 @@ if [[ -f "/home/ubuntu/default.json" ]]; then
   sudo sed -i "s_https://portal.muuktest.com:8081/_"$muuktestRoute"_" /home/ubuntu/projects/executor/mkcli.py
 fi
 
-# if [[ -f "/home/ubuntu/config.json" ]]; then
-#   echo "Config File exists"
-  #Adding the cloudKey in the mkcloud.py file
-  # cloudKey=$(cat /home/ubuntu/config.json  | jq -r '.cloudKey')
-  # sudo sed -i '$ a def getCloudKey():' /home/ubuntu/projects/executor/mkcloud.py
-  # sudo sed -i "$ a  \ \ return('$cloudKey')" /home/ubuntu/projects/executor/mkcloud.py
-# fi
+if [[ -f "/home/ubuntu/config.json" ]]; then
+  echo "Config File exists"
+  # Adding the cloudKey in the mkcloud.py file
+  cloudKey=$(cat /home/ubuntu/config.json  | jq -r '.cloudKey')
+  sudo sed -i '$ a def getCloudKey():' /home/ubuntu/projects/executor/mkcloud.py
+  sudo sed -i "$ a  \ \ return('$cloudKey')" /home/ubuntu/projects/executor/mkcloud.py
+fi
