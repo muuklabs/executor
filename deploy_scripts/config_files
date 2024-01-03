@@ -10,14 +10,14 @@ if [[ -f "/home/ubuntu/config.json" ]]; then
   #Changing portal route to the proper one in the config file
   muuktestRoute=$(cat /home/ubuntu/config.json  | jq -r '.BERoute')
   echo $muuktestRoute
-  if [[ ! -z $muuktestRoute ]]; then
+  if [[ -n "$muuktestRoute" ]]; then
     #Change the BE route in the mkcli.py file
     sudo sed -i "s_https://portal.muuktest.com:8081_"$muuktestRoute"_" /home/ubuntu/projects/executor/mkcli.py
   fi
 
   # Adding the cloudKey in the mkcloud.py file
   cloudKey=$(cat /home/ubuntu/config.json  | jq -r '.cloudKey')
-  if [[ ! -z $cloudKey ]]; then
+  if [[ -n "$cloudKey" ]]; then
     sudo sed -i '$ a def getCloudKey():' /home/ubuntu/projects/executor/mkcloud.py
     sudo sed -i "$ a  \ \ return('$cloudKey')" /home/ubuntu/projects/executor/mkcloud.py
   fi
