@@ -5,17 +5,14 @@ sudo chmod 777 /home/ubuntu/projects/executor/gradlew
 
 #Setting the cloud key
 #The cloud key it's located in a external config.json file
-if [[ -f "/home/ubuntu/default.json" ]]; then
-  echo "Default File exists"
-
-  #Changing portal route to the proper one in the config file
-  muuktestRoute=$(cat /home/ubuntu/default.json  | jq -r '.Muuklabs.prototype.BE_route')
-  echo $muuktestRoute
-  sudo sed -i "s_https://portal.muuktest.com:8081/_"$muuktestRoute"_" /home/ubuntu/projects/executor/mkcli.py
-fi
-
 if [[ -f "/home/ubuntu/config.json" ]]; then
   echo "Config File exists"
+
+  #Changing portal route to the proper one in the config file
+  muuktestRoute=$(cat /home/ubuntu/config.json  | jq -r '.BERoute')
+  echo $muuktestRoute
+  sudo sed -i "s_https://portal.muuktest.com:8081_"$muuktestRoute"_" /home/ubuntu/projects/executor/mkcli.py
+
   # Adding the cloudKey in the mkcloud.py file
   cloudKey=$(cat /home/ubuntu/config.json  | jq -r '.cloudKey')
   sudo sed -i '$ a def getCloudKey():' /home/ubuntu/projects/executor/mkcloud.py
