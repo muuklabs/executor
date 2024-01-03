@@ -16,3 +16,7 @@ pip3 install request
 sudo apt -y install jq
 #Installing lxml
 sudo pip3 install lxml
+#Installing Google 114
+wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.198-1_amd64.deb
+sudo dpkg -i google-chrome-stable_114.0.5735.198-1_amd64.deb
+sudo rm google-chrome-stable_114.0.5735.198-1_amd64.deb
