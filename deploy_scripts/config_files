@@ -1,7 +1,6 @@
 #!/bin/bash
 #Changing the executor permissions
-sudo chmod -R 777 /home/ubuntu/projects/executor/
-sudo chmod 777 /home/ubuntu/projects/executor/gradlew
+sudo chown -R ubuntu:ubuntu /home/ubuntu/projects/executor
 
 #Setting the cloud key
 #The cloud key it's located in a external config.json file
