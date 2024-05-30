@@ -161,8 +161,8 @@ def run(args):
       shutil.rmtree(route, ignore_errors=True)
     os.makedirs(route)
 
-    #values = {'property': field, 'value[]': valueArr, 'userId': userId, 'executionnumber': executionNumber}
-    values = {'property': field, 'value[]': valueArr, 'userId': userId, 'executionnumber': executionNumber, 'origin': origin, 'originid': originid, 'scheduleExecutionNumber': scheduleExecutionNumber}
+    #values = {'property': field, 'value[]': valueArr, 'userId': userId, 'executionnumber': executionNumber, 'browser': browser}
+    values = {'property': field, 'value[]': valueArr, 'userId': userId, 'executionnumber': executionNumber, 'browser': browser, 'origin': origin, 'originid': originid, 'scheduleExecutionNumber': scheduleExecutionNumber}
     # Add screen dimension data if it is set as an argument
     if checkDimensions == True:
       values['dimensions'] = [dimensions[0],dimensions[1]]
@@ -301,7 +301,8 @@ def run(args):
 def getBrowserName(browser):
   switcher = {
     "chrome":"chromeTest",
-    "firefox": "firefoxTest"
+    "firefox": "firefoxTest",
+    "iphone12": "iphone12Test"
   }
   #select a browser from the list or return firefox as default
   return switcher.get(browser,"firefoxTest")

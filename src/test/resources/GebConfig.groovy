@@ -1,12 +1,16 @@
 // This is the Geb configuration file.
 // See: http://www.gebish.org/manual/current/#configuration
 
+import java.net.URL;
 
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.remote.CapabilityType
+import org.openqa.selenium.WebElement
+import io.appium.java_client.ios.IOSDriver
+
 
 waiting {
   timeout = 20
@@ -45,6 +49,27 @@ environments {
     atCheckWaiting = 1
     driver = { new FirefoxDriver() }
   }
+
+  iphone12 {
+    String USERNAME = "an*********_P***q";
+    String AUTOMATE_KEY = "v***********pbMbm";
+    String URL = "https://" + USERNAME + ":" + AUTOMATE_KEY + "@hub-cloud.browserstack.com/wd/hub";
+    driver = {
+      DesiredCapabilities caps = new DesiredCapabilities();
+      caps.setCapability("os_version", "14");
+      caps.setCapability("device", "iPhone 12");
+      caps.setCapability("real_mobile", "true");
+      caps.setCapability("project", "Sample Test");
+      caps.setCapability("build", "Sample Build");
+      caps.setCapability("debug", "true");
+      caps.setCapability("browser", "safari");
+      caps.setCapability("nativeWebTap",true);
+      caps.setCapability("name", "Bstack-Upload File Demo");
+      caps.setCapability("browserstack.uploadMedia", []);
+      new IOSDriver<WebElement>(new URL(URL), caps);
+    }
+  }
+
 }
 
 // To run the tests with all browsers just run “./gradlew test”
