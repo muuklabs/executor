@@ -1,12 +1,17 @@
 // This is the Geb configuration file.
 // See: http://www.gebish.org/manual/current/#configuration
 
+import java.net.URL;
 
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.openqa.selenium.remote.CapabilityType
+
+//WDM to use on Selenium3
+//import io.github.bonigarcia.wdm.WebDriverManager;
 
 waiting {
   timeout = 20
@@ -15,18 +20,18 @@ waiting {
 environments {
   // run via “./gradlew chromeTest”
   // See: http://code.google.com/p/selenium/wiki/ChromeDriver
+
   chrome {
     driver = {
-      ChromeOptions o = new ChromeOptions()
-      o.addArguments('--no-sandbox');
-      o.addArguments('--disable-dev-shm-usage');
-      o.addArguments("--ignore-certificate-errors");
-      DesiredCapabilities cap=DesiredCapabilities.chrome();
-      cap.setCapability(ChromeOptions.CAPABILITY, o);
-      cap.setCapability(CapabilityType.ACCEPT_SSL_CERTS, true);
-      cap.setCapability(CapabilityType.ACCEPT_INSECURE_CERTS, true);
-      new ChromeDriver(cap);
+        ChromeOptions options = new ChromeOptions()
+        new ChromeDriver(options)
     }
+  }
+
+  chromeWDM {
+    //Download and configure ChromeDriver using https://github.com/bonigarcia/webdrivermanager
+    WebDriverManager.chromedriver().setup()
+    WebDriver driver = new ChromeDriver()
   }
 
   // run via “./gradlew chromeHeadlessTest”
@@ -45,6 +50,7 @@ environments {
     atCheckWaiting = 1
     driver = { new FirefoxDriver() }
   }
+
 }
 
 // To run the tests with all browsers just run “./gradlew test”

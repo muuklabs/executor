@@ -7,13 +7,12 @@ plugins {
 
 ext {
     // The drivers we want to use
-    drivers = ["chrome","firefox"]
+    drivers = ["chrome","firefox","iphone12"]
 
     ext {
         groovyVersion = '2.4.12'
         gebVersion = '2.2'
-        seleniumVersion = '3.6.0'
-        chromeDriverVersion = '97.0.4692.71'
+        seleniumVersion = '4.13.0'
         geckoDriverVersion = '0.23.0'
     }
 }
@@ -45,10 +44,15 @@ dependencies {
 
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
+    //Use this on Selenium3 driver downloaded by WebDriverManager
+    //testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'
+
+    //This is for Selenium4 driver and chrome4testing download and cached by ChromeDriver itself
+    testImplementation 'org.seleniumhq.selenium:selenium-chrome-driver:4.8.0'
+
 }
 
 webdriverBinaries {
-    chromedriver chromeDriverVersion
     geckodriver geckoDriverVersion
 }
 
