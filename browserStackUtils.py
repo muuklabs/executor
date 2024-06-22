@@ -25,7 +25,8 @@ def getBSVideo(browser, extraSettingsJson, videoNameFile):
          for build in response:
             if('automation_build' in build and 'name' in build['automation_build']):
                name = build['automation_build']['name']
-               if(name == build_name):
+               tag = build['automation_build']['build_tag']
+               if(name == build_name and tag == "selenium" ):
                   build_id = build['automation_build']['hashed_id']
                   endPoint = "automate/builds/" + build_id + "/sessions.json?limit=1"
                   sessionResponse = send_browserstack_request(endPoint, user_name, password)
