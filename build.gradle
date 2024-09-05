@@ -1,3 +1,5 @@
+import groovy.json.JsonSlurper
+
 plugins {
     id "idea"
     id "groovy"
@@ -5,10 +7,27 @@ plugins {
     id "com.energizedwork.idea-base" version "1.4"
 }
 
+def defaultDrivers = ["chrome", "firefox"]
+def bsDrivers = []
+
+// Define the location of your JSON file
+def jsonFile = file('src/test/groovy/extraSettings.json')
+if (jsonFile.exists() && jsonFile.text) {
+    // Parse the JSON file
+    def jsonSlurper = new JsonSlurper()
+    def jsonContent = jsonSlurper.parse(jsonFile)
+    // Extract BS project attributes from the JSON file
+    if (jsonContent?.browserstack?.caps) {
+        bsDrivers = jsonContent.browserstack.caps.collect { it.project }
+    }
+}
+
+// Merge default drivers with project drivers from the JSON file
+def drivers = defaultDrivers + bsDrivers
+
 ext {
     // The drivers we want to use
-    drivers = ["chrome","firefox"]
-
+    drivers = drivers
     ext {
         groovyVersion = '2.4.12'
         gebVersion = '2.2'
@@ -37,12 +56,12 @@ dependencies {
     // Drivers
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
-
-    compile group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '3.14.0'
+    testImplementation group: 'io.appium', name: 'java-client', version: '7.3.0'
+    compile group: 'org.seleniumhq.selenium', name: 'selenium-support', version: '3.141.59'
     
     // JSON simple for MuukReport
-    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1' 
-
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+     
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
 }

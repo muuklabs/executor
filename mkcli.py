@@ -12,6 +12,9 @@ from mkcloud import gatherScreenshots, resizeImages, getCloudKey
 from mkvideo import Video
 #import ssl
 from domparser import createMuukReport
+from browserStackUtils import getBSVideo
+
+extraSettingsJson = {}
 
 def gatherFeedbackData(browserName):
   #The path will be relative to the browser used to execute the test (chromeTest/firefoxTest)
@@ -97,8 +100,6 @@ def run(args):
 
   #Exit code to report at circleci
   exitCode = 1
-  #Check if we received a browser and get the string for the gradlew task command
-  browserName = getBrowserName(browser)
   muuktestRoute = 'https://portal.muuktest.com:8081/'
   supportRoute = 'https://testing.muuktest.com:8082/'
 
@@ -198,6 +199,12 @@ def run(args):
       #Unzip the file // the library needs the file to end in .rar for some reason
       shutil.unpack_archive('test.zip', extract_dir=route, format='zip')
 
+      # Read extraSettings file in case we need BS information
+      readExtraSettingsFile()
+
+      #Check if we received a browser and get the string for the gradlew task command
+      browserName = getBrowserName(browser)
+
       if os.path.exists("src/test/groovy/executionNumber.execution"):
         try:
           execFile = open('src/test/groovy/executionNumber.execution', 'r')
@@ -208,6 +215,8 @@ def run(args):
       else:
         print("executionNumber.execution file not found")
 
+      # Copy the GebConfig file to the correct path
+      shutil.copy('src/test/groovy/GebConfig.groovy', 'src/test/resources/GebConfig.groovy')
       os.system('chmod 544 ' + dirname + '/gradlew')
 
       #save the dowonloaded test entry to the database
@@ -234,18 +243,26 @@ def run(args):
         print("File name for video: " + videoNameFile)
         print("Executing test...")
         try:
-          v.checkAndStartRecording(videoNameFile)
-          #v.checkActiveSession()
-          #v.executeCmd("ps -ef | grep ffmpeg")
-          #v.executeCmd("ls -ltr | grep *.mp4")
+          if isLocalExecution(browserName) :
+            v.checkAndStartRecording(videoNameFile)
+            #v.checkActiveSession()
+            #v.executeCmd("ps -ef | grep ffmpeg")
+            #v.executeCmd("ls -ltr | grep *.mp4")
+          else: 
+            print("This is a BS execution no need to record video")
           exitCode = subprocess.call(dirname + '/gradlew clean '+browserName, shell=True)
         except Exception as e:
           print("Error during gradlew compilation and/or execution ")
           print(e)
 
-        #v.executeCmd("ps -ef | grep ffmpeg")
-        v.checkAndStopRecording()
-        #v.executeCmd("ls -ltr | grep *.mp4")
+        if isLocalExecution(browserName) :
+            #v.executeCmd("ps -ef | grep ffmpeg")
+            v.checkAndStopRecording()
+            #v.executeCmd("ls -ltr | grep *.mp4")
+        else:
+          print("We need to obtain the video from BS")  
+          getBSVideo(browser, extraSettingsJson, videoNameFile)
+
         del v
         testsExecuted = gatherFeedbackData(browserName)
         url = muuktestRoute+'feedback/'
@@ -293,6 +310,23 @@ def run(args):
   print("exiting script with exitcode: " + str(exitCode))
   exit(exitCode)
 
+def isLocalExecution(browser):
+  if "chromeTest" == browser or "firefoxTest" == browser :
+    return True
+  else:
+    return False  
+
+def readExtraSettingsFile():
+  extraSettingsFile = 'src/test/groovy/extraSettings.json'
+  try:
+    with open(extraSettingsFile, 'r') as file:
+      global extraSettingsJson
+      extraSettingsJson = json.load(file)
+  except FileNotFoundError:
+      print(f"Error: The file {extraSettingsFile} does not exist.")
+  except json.JSONDecodeError:
+      print(f"Error: The file {extraSettingsFile} is not valid JSON.")
+
 #function that returns the task command for a browser if supported
 #parameters
 # browser: browsername
@@ -301,8 +335,17 @@ def run(args):
 def getBrowserName(browser):
   switcher = {
     "chrome":"chromeTest",
-    "firefox": "firefoxTest"
+    "firefox": "firefoxTest",
   }
+
+  # Add the browser options from BS if needed
+  if 'browserstack' in extraSettingsJson and 'caps' in extraSettingsJson['browserstack']:
+    for cap in extraSettingsJson['browserstack']['caps']:
+      project = cap.get('project')
+      if project:
+        switcher[project] = f"{project}Test"
+
+  print(switcher)      
   #select a browser from the list or return firefox as default
   return switcher.get(browser,"firefoxTest")
 
