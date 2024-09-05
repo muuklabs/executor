@@ -64,6 +64,8 @@ dependencies {
      
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
+    //implementation group: 'net.lightbody.bmp', name: 'browsermob-proxy', version: '2.1.5'
+    compile group: 'net.lightbody.bmp', name: 'browsermob-core', version: '2.1.5'    
 }
 
 webdriverBinaries {
