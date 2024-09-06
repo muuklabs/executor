@@ -3,8 +3,6 @@ import groovy.json.JsonSlurper
 plugins {
     id "idea"
     id "groovy"
-    id "com.energizedwork.webdriver-binaries" version "1.4"
-    id "com.energizedwork.idea-base" version "1.4"
 }
 
 def defaultDrivers = ["chrome", "firefox"]
@@ -64,11 +62,9 @@ dependencies {
      
     implementation 'com.github.javafaker:javafaker:1.0.2'
 
-}
-
-webdriverBinaries {
-    chromedriver chromeDriverVersion
-    geckodriver geckoDriverVersion
+    //Use this on Selenium3 driver downloaded by WebDriverManager                                                                                     
+    testImplementation 'io.github.bonigarcia:webdrivermanager:5.8.0'                                                                                  
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
 }
 
 drivers.each { driver ->
@@ -85,6 +81,7 @@ drivers.each { driver ->
 test {
     dependsOn drivers.collect { tasks["${it}Test"] }
     enabled = false
+    systemProperty 'org.slf4j.simpleLogger.defaultLogLevel', 'debug'
 }
 
 tasks.withType(Test) {
