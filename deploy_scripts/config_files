@@ -1,0 +1,24 @@
+#!/bin/bash
+#Changing the executor permissions
+sudo chown -R ubuntu:ubuntu /home/ubuntu/projects/executor
+
+#Setting the cloud key
+#The cloud key it's located in a external config.json file
+if [[ -f "/home/ubuntu/config.json" ]]; then
+  echo "Config File exists"
+
+  #Changing portal route to the proper one in the config file
+  muuktestRoute=$(cat /home/ubuntu/config.json  | jq -r '.BERoute')
+  echo $muuktestRoute
+  if [[ "$muuktestRoute" != "null" ]]; then
+    #Change the BE route in the mkcli.py file
+    sudo sed -i "s_https://portal.muuktest.com:8081_"$muuktestRoute"_" /home/ubuntu/projects/executor/mkcli.py
+  fi
+
+  # Adding the cloudKey in the mkcloud.py file
+  cloudKey=$(cat /home/ubuntu/config.json  | jq -r '.cloudKey')
+  if [[ "$cloudKey" != "null" ]]; then
+    sudo sed -i '$ a def getCloudKey():' /home/ubuntu/projects/executor/mkcloud.py
+    sudo sed -i "$ a  \ \ return('$cloudKey')" /home/ubuntu/projects/executor/mkcloud.py
+  fi
+fi

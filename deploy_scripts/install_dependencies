@@ -8,14 +8,15 @@ sudo pip3 install BeautifulSoup4
 sudo apt -y install xvfb
 #Installing firefox
 sudo apt -y install firefox
-#Installing google chrome
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-sudo apt -y install ./google-chrome-stable_current_amd64.deb
-sudo apt-get install google-chrome-stable
-sudo rm google-chrome-stable_current_amd64.deb
 #Installing ffmpeg
 sudo apt -y install ffmpeg
 #Installing request
 pip3 install request
 #Installing jq to read json files
 sudo apt -y install jq
+#Installing lxml
+sudo pip3 install lxml
+#Installing Google 114
+wget https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_114.0.5735.198-1_amd64.deb
+sudo dpkg -i google-chrome-stable_114.0.5735.198-1_amd64.deb
+sudo rm google-chrome-stable_114.0.5735.198-1_amd64.deb
