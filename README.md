@@ -7,7 +7,12 @@ Welcome to the Muuktest Executer
 Prerequisites
 -------------
 - Python 3 installed
+
+Install python dependencies (use pip or pip3 according your installation settings):
 - sudo pip install requests
+- sudo pip install lxml
+- sudo pip install beautifulsoup4
+- sudo pip install pillow
 
 How to use
 -----------------
