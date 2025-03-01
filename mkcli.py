@@ -107,7 +107,8 @@ def run(args):
   #muuktestRoute = 'https://localhost:8081/'
   #supportRoute = 'https://localhost:8082/'
 
-
+  # Set the system property for muuktestRoute
+  os.environ['muuktestRoute'] = muuktestRoute
 
   dirname = os.path.dirname(__file__)
   if dirname == "":
@@ -126,6 +127,9 @@ def run(args):
   try:
     key_file = open(path,'r')
     key = key_file.read().strip()
+    # Set the system property for muuktestKey
+    os.environ['muuktestKey'] = key
+
     r = requests.post(muuktestRoute+"generate_token_executer", data={'key': key})
     #r = requests.post(muuktestRoute+"generate_token_executer", data={'key': key}, verify=False)
     responseObject = json.loads(r.content)
@@ -250,7 +254,9 @@ def run(args):
             #v.executeCmd("ls -ltr | grep *.mp4")
           else: 
             print("This is a BS execution no need to record video")
-          exitCode = subprocess.call(dirname + '/gradlew clean '+browserName, shell=True)
+          # Execute the test with the environment variable passed to the JVM
+          gradle_command = f"{dirname}/gradlew clean {browserName} -DmuuktestRoute={muuktestRoute} -DmuuktestKey={key}"
+          exitCode = subprocess.call(gradle_command, shell=True)
         except Exception as e:
           print("Error during gradlew compilation and/or execution ")
           print(e)
